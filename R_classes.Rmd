@@ -1,0 +1,139 @@
+---
+title: "R S3/S4 class/object"
+author: Weiyang Tao (weiyangtao1513@gmail.com)
+output:
+  html_document:
+    df_print: paged
+---
+# Object
+Everything in R is an object.
+
+```{r}
+a = 1
+b = "character"
+c = function(x) x
+d = NULL
+e = TRUE
+
+```
+
+# Class
+
+```{r}
+a = 1:10
+str(a)
+class(a) = "classA"
+str(a)
+```
+
+# S3 class/object
+
+```{r}
+rm(list = ls( all.names = TRUE))
+b0 = c("a", "b", "c")
+str(b0)
+
+objectB = structure(b0, class = "classB")
+str(objectB)
+```
+Let's print objectB using "print" function.
+```{r}
+print(objectB)
+```
+
+
+# S3 function/method
+```{r}
+print.classB = function(x){
+  cat("This is a classB object\n")
+  print.default(x)
+}
+print.classB(objectB)
+```
+
+Let's print objectB using "print" function again.
+```{r}
+print(objectB) # the same as print.classB
+```
+
+
+
+# S4 class
+
+```{r}
+ls(all.names = T)
+rm(list = ls( all.names = TRUE))
+setClass(Class = "Class4", 
+         representation = representation(first = "numeric",
+                                         second = "character"))
+ls(all.names = T)
+.__C__Class4
+str(.__C__Class4)
+```
+
+# S4 object
+Create an S4 object using the default values
+```{r}
+# Using the default values
+new("Class4")
+```
+Create an S4 object using the default values
+```{r}
+# Using the default values
+object4 = new("Class4", first = 1:5, second = letters)
+object4
+```
+
+Set Generic
+```{r}
+setGeneric(name = "fun", function(object, ...) standardGeneric("fun"))
+```
+What code is in function "fun"?
+```{r}
+fun
+```
+
+Can we use "fun" on "object4"?
+```{r}
+# fun(object4)
+```
+
+# Define a method for object4
+```{r}
+# "object" argument in the function must be the same as in the generic
+setMethod("fun", signature = signature("Class4"), 
+          definition = function(object){
+            cat("first:\n")
+            cat(object@first, "\n\n")
+            cat("second:\n")
+            cat(object@second, "\n")
+          })
+```
+
+
+Can we use "fun" on "object4" now?
+```{r}
+fun(object4)
+```
+
+
+What code is in function "fun" now?
+```{r}
+fun
+```
+*The same code!! *
+
+# Can we get the code of a method?
+
+```{r}
+# devtools::install_github("paodan/funcTools")
+library(funcTools)
+tmp = funCode(fun)
+tmp@fS4@fcn$Class4
+```
+Let's see if it is the same output as function "fun" itself.
+```{r}
+print(tmp@fS4@fcn$Class4)
+tmp@fS4@fcn$Class4(object4)
+```
+
