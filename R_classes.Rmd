@@ -93,9 +93,9 @@ What code is in function "fun"?
 fun
 ```
 
-Can we use "fun" on "object4"?
-```{r}
-# fun(object4)
+Can we apply function "fun" on "object4"?
+```{r, eval=FALSE}
+fun(object4)
 ```
 
 # Define a method for object4
